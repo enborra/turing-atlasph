@@ -1,0 +1,8 @@
+{
+    "service_name": "com.turing.atlasph",
+
+    "install": {
+        "osx": "com.turing.atlasph.plist",
+        "raspberry_pi": "com.turing.atlasph.service"
+    }
+}
