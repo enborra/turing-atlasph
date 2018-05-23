@@ -39,7 +39,7 @@ class CoreService(object):
             time.sleep(1)
             ph = self._ph._query('R')
 
-            self.output('{"sender": "service_atlasph", "message": "got new ph reading."}')
+            self.output('{"sender": "service_atlasph", "message": "got new ph reading: %s"}' % ph)
 
     def _on_connect(self, client, userdata, flags, rc):
         self.output('{"sender": "service_atlasph", "message": "Connected to GrandCentral."}')
