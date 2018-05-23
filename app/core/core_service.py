@@ -11,11 +11,11 @@ class CoreService(object):
     _comm_delay = 0
     _thread_comms = None
     _thread_lock = None
-    _engine = None
+    _ph = None
 
 
     def __init__(self):
-        pass
+        self._ph = PHSensor()
 
     def start(self):
         self._comm_client = mqtt.Client(
@@ -35,7 +35,10 @@ class CoreService(object):
         self._thread_comms.start()
 
         while True:
-            pass
+            time.sleep(1)
+            ph = self._ph.get_reading()
+
+            self.output('{"sender": "service_atlasph", "message": "got new ph reading."}')
 
     def _on_connect(self, client, userdata, flags, rc):
         self.output('{"sender": "service_atlasph", "message": "Connected to GrandCentral."}')
