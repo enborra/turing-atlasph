@@ -11,7 +11,7 @@ class CoreService(object):
     _comm_delay = 0
     _thread_comms = None
     _thread_lock = None
-    _engine = None
+    _ph = None
 
     _status_channel_name = '/sensors/ph'
     _system_channel_name = '/system'
@@ -20,7 +20,8 @@ class CoreService(object):
 
 
     def __init__(self):
-        pass
+        self._ph = PHSensor()
+        self._ph._set_i2c_address(99)
 
     def start(self):
         self._comm_client = mqtt.Client(
@@ -40,7 +41,10 @@ class CoreService(object):
         self._thread_comms.start()
 
         while True:
-            pass
+            time.sleep(1)
+            ph = self._ph._query('R')
+
+            self.output('{"sender": "service_atlasph", "message": "got new ph reading: %s"}' % ph)
 
     def _on_connect(self, client, userdata, flags, rc):
         self.output('{"sender": "service_atlasph", "message": "Connected to GrandCentral."}')
