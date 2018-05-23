@@ -37,7 +37,7 @@ class CoreService(object):
 
         while True:
             time.sleep(1)
-            ph = self._ph.query('R')
+            ph = self._ph._query('R')
 
             self.output('{"sender": "service_atlasph", "message": "got new ph reading."}')
 
