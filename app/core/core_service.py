@@ -76,7 +76,8 @@ class CoreService(object):
         comms_server = 'localhost'
         comms_port = 1883
 
-        print('Connecting to comms system @ %s:%s' % (comms_server, comms_port))
+        if self._is_debug:
+            print('Connecting to comms system @ %s:%s' % (comms_server, comms_port))
 
         try:
             self._comm_client.connect(
@@ -86,14 +87,14 @@ class CoreService(object):
             )
 
         except Exception, e:
-            if self.is_debug:
+            if self._is_debug:
                 print('Could not connect to local GranCentral. Retry in one second.')
 
             time.sleep(1)
             self._connect_to_comms()
 
     def _start_thread_comms(self):
-        if self.is_debug:
+        if self._is_debug:
             print('Comms thread started.')
 
         self._thread_lock.acquire()
@@ -104,7 +105,7 @@ class CoreService(object):
         finally:
             self._thread_lock.release()
 
-        if self.is_debug:
+        if self._is_debug:
             print('Connected to comms server.')
 
         while True:
@@ -125,4 +126,5 @@ class CoreService(object):
         if self._comm_client:
             self._comm_client.publish(channel, msg)
 
-        print(msg)
+        if self._is_debug:
+            print(msg)
