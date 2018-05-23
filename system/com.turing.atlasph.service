@@ -5,7 +5,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/bin/bash /home/pi/projects/turing/services/atlasph/boot.sh
+ExecStart=/bin/bash /etc/turing/services/turing-atlasph/boot.sh
 Restart=on-abort
 
 [Install]
