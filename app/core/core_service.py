@@ -13,6 +13,11 @@ class CoreService(object):
     _thread_lock = None
     _engine = None
 
+    _status_channel_name = '/sensors/ph'
+    _system_channel_name = '/system'
+
+    _is_debug = False
+
 
     def __init__(self):
         pass
@@ -53,29 +58,39 @@ class CoreService(object):
         pass
 
     def _on_subscribe(self, mosq, obj, mid, granted_qos):
-        self.output('{"sender": "service_luna", "message": "Successfully subscribed to GrandCentral /system channel."}')
+        msg = {
+            'sender': 'service_atlasph',
+            'message': 'Successfully subscribed to GrandCentral /system channel.'
+        }
+
+        self.output(str(msg), )
 
     def _on_log(self, mosq, obj, level, string):
         pass
 
     def _connect_to_comms(self):
-        print('Connecting to comms system..')
+        comms_server = 'localhost'
+        comms_port = 1883
+
+        print('Connecting to comms system @ %s:%s' % (comms_server, comms_port))
 
         try:
             self._comm_client.connect(
-                'localhost',
-                1883,
+                comms_server,
+                comms_port,
                 60
             )
 
         except Exception, e:
-            print('Could not connect to local GranCentral. Retry in one second.')
+            if self.is_debug:
+                print('Could not connect to local GranCentral. Retry in one second.')
 
             time.sleep(1)
             self._connect_to_comms()
 
     def _start_thread_comms(self):
-        print('Comms thread started.')
+        if self.is_debug:
+            print('Comms thread started.')
 
         self._thread_lock.acquire()
 
@@ -85,7 +100,8 @@ class CoreService(object):
         finally:
             self._thread_lock.release()
 
-        print('Connected to comms server.')
+        if self.is_debug:
+            print('Connected to comms server.')
 
         while True:
             self._thread_lock.acquire()
@@ -101,8 +117,8 @@ class CoreService(object):
             finally:
                 self._thread_lock.release()
 
-    def output(self, msg):
+    def output(self, msg, channel=_status_channel_name):
         if self._comm_client:
-            self._comm_client.publish('/system', msg)
+            self._comm_client.publish(channel, msg)
 
         print(msg)
