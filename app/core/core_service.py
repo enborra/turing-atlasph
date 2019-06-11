@@ -62,12 +62,14 @@ class CoreService(object):
         pass
 
     def _on_subscribe(self, mosq, obj, mid, granted_qos):
-        msg = {
-            'sender': 'service_atlasph',
-            'message': 'Successfully subscribed to GrandCentral /system channel.'
-        }
+        # msg = {
+        #     'sender': 'service_atlasph',
+        #     'message': 'Successfully subscribed to GrandCentral /system channel.'
+        # }
+        #
+        # self.output(str(msg), self._system_channel_name)
 
-        self.output(str(msg), )
+        pass
 
     def _on_log(self, mosq, obj, level, string):
         pass
